@@ -56,8 +56,7 @@ void setup()
   display.display();
   delay(1000);
 }
-
-void loop()
+void refreshData()
 {
   if (process) {
     slaveindex = slaveget;
@@ -73,9 +72,12 @@ void loop()
   for(int z = 0 ; z < 4 ; z++) {
     state[z] = digitalRead(load[z]);
   }
+}
+void loop()
+{
+  refreshData();
 
   display.clearDisplay();
-  //display.fillRect(0, 0, 128, 64, INVERSE);
   display.drawRect(8, 12, 114, 36, WHITE);
   display.setFont(&FreeSans18pt7b);
   display.setTextSize(1);
@@ -98,6 +100,8 @@ void loop()
   delay(PAGE_TIME);
   display.setFont();
 
+  refreshData();
+
   display.clearDisplay();
   display.drawLine(0, 10, 128, 10, WHITE);
   display.drawLine(0, 58, 128, 58, WHITE);
@@ -109,6 +113,8 @@ void loop()
   display.print("Supply Control System");
   display.display();
   delay(PAGE_TIME);
+
+  refreshData();
 
   display.clearDisplay();
   for(int16_t i=max(display.width(),display.height())/2; i>0; i-=5) {
@@ -143,6 +149,8 @@ void loop()
   }
   display.display();
   delay(PAGE_TIME);
+
+  refreshData();
 
   writeLogo();
   for(int16_t i = 0; i < display.height() / 2 - 8; i += 2) {
@@ -184,6 +192,8 @@ void loop()
   display.display();
   delay(PAGE_TIME);
 
+  refreshData();
+
   writeLogo();
   for(int16_t i = 0; i < display.height() / 2 - 6; i += 3) {
     display.fillRect(i, i, 
@@ -213,6 +223,8 @@ void loop()
   drawLoadState(2, 28, 57, 34, 51);
   drawLoadState(3, 90, 57, 95, 51);
   delay(PAGE_TIME);
+
+  refreshData();
 
   writeLogo();
   for(int16_t i = max(display.width(), display.height()) / 2; i > 30; i -= 3) {

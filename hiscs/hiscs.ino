@@ -7,7 +7,7 @@ double VRMS = 0;
 double Current = 0;
 double av_current = 4 ;
 double new_maxcurrent = 4 ;
-int load[4] = {7,6,5,4} ;
+int load[4] = {8,6,5,4} ;
 int priority[4] = {0,1,2,3};
 int state[4] = {1,1,1,1};
 const int sensor[] = {A0,A1,A2,A5};
@@ -32,7 +32,7 @@ void setup(){
  pinMode(4, OUTPUT);
  pinMode(5, OUTPUT);
  pinMode(6, OUTPUT);
- pinMode(7, OUTPUT);
+ pinMode(8, OUTPUT);
 }
 
 void send_data(byte Mastersend)
@@ -162,24 +162,8 @@ void loop()
           int e = int(value.charAt(5) - '0');
           int r = int(value.charAt(6) - '0');
           int t = int(value.charAt(7) - '0');
-          // Serial.println(t);
           unsigned long seconds = (q * 10000) + (w * 1000) + (e * 100) + (r * 10) + t;
-          // Serial.println(milliseconds);
-          switch (load_sel) {
-            case 'A':
-              set_schedule(0, load_st, seconds) ;
-              break;
-            case 'B':
-              set_schedule(1, load_st, seconds) ;
-              // Serial.println("Be chzas B");
-              break;
-            case 'C':
-              set_schedule(2, load_st, seconds) ;
-              break;
-            case 'D':
-              set_schedule(3, load_st, seconds) ;
-              break;
-          }
+          set_schedule(int(load_sel - 'A'), load_st, seconds);
         }
         break;
       
@@ -199,13 +183,16 @@ void loop()
               break;
             case 'D':
               switchLoad(3, load_state == '1');
-              // Serial.println("akia yeti s manz");
               break;
+              //switchLoad(int(load_select - 'A'), load_state == '1');
+              // Serial.println("akia yeti s manz");
+              //break;
             case 'R':
                reInit();
                break;
             case 'I':
                send_data(50 + load_state - '0');
+               break;
             case 'M':
               int tens = int(load_state - '0');
               int ones = int(value.charAt(3) - '0');
