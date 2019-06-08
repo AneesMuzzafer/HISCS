@@ -66,9 +66,14 @@ void set_schedule(int con, int con_state, unsigned long con_time)
   schedule_state[con] = con_state;
   schedule_time[con] = con_time;
   schedule_enabled[con] = 1;
-  //Serial.println(millis());
-  //Serial.println(con_state);
-  //Serial.println(con_time);
+}
+
+void cancelAllSchedules()
+{
+  for (int m = 0; m < 4; m++) {
+    schedule_enabled[m] = 0;
+  }
+  sendData();
 }
 
 void switchLoad(int loadIndex, bool s)
@@ -98,10 +103,7 @@ void loop()
       switchLoad(priority[j], true);
       delay(50);
       Current = getCurrent(priority[j]);
-     /* Serial.print(Current);
-      Serial.print("  ");
-      Serial.print(priority[j]);
-      Serial.print(" | ");*/
+
       if(Current <= av_current)
       {
         av_current -= Current;
@@ -149,6 +151,8 @@ void loop()
         break;
       case 'X':
         sendData();
+      case 'Z':
+        cancelAllSchedules();
       case 'T':
         {
           char load_sel = value.charAt(1);
@@ -211,6 +215,8 @@ void loop()
               reInit();
               break;
           }
+
+          sendData();
         }
         break;
       
@@ -230,16 +236,16 @@ void sendData()
   String scheduleStates = "";
   for (int z = 0; z < 4; z++)
   {
-    scheduleStates += schedule_enabled[z] + '0';
+    scheduleStates += String(schedule_enabled[z]);
   }
   
   String send_string = String("") + 
-         'A' + state[0] + getCurrent(0) + ';' + 
-         'B' + state[1] + getCurrent(1) + ';' + 
-         'C' + state[2] + getCurrent(2) + ';' + 
-         'D' + state[3] + getCurrent(3) + ';' + 
-         scheduleStates;
-      
+                       "A" + state[0] + getCurrent(0) + ";" + 
+                       "B" + state[1] + getCurrent(1) + ";" + 
+                       "C" + state[2] + getCurrent(2) + ";" + 
+                       "D" + state[3] + getCurrent(3) + ";" + 
+                       scheduleStates;
+  
   Serial.println(send_string); 
 }
 
