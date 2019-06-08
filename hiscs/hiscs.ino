@@ -7,7 +7,7 @@ double VRMS = 0;
 double Current = 0;
 double av_current = 4 ;
 double new_maxcurrent = 4 ;
-int load[4] = {8,6,5,4} ;
+int load[4] = {7,6,5,4} ;
 int priority[4] = {0,1,2,3};
 int state[4] = {1,1,1,1};
 const int sensor[] = {A0,A1,A2,A5};
@@ -32,7 +32,7 @@ void setup(){
  pinMode(4, OUTPUT);
  pinMode(5, OUTPUT);
  pinMode(6, OUTPUT);
- pinMode(8, OUTPUT);
+ pinMode(7, OUTPUT);
 }
 
 void send_data(byte Mastersend)
@@ -151,8 +151,10 @@ void loop()
         break;
       case 'X':
         sendData();
+        break;
       case 'Z':
         cancelAllSchedules();
+        break;
       case 'T':
         {
           char load_sel = value.charAt(1);
@@ -173,20 +175,11 @@ void loop()
           char load_state = value.charAt(2);
           switch (load_select){
             case 'A':
-              switchLoad(0, load_state == '1');
-              break;
             case 'B':
-              switchLoad(1, load_state == '1');
-              break;
             case 'C':
-              switchLoad(2, load_state == '1');
-              break;
             case 'D':
-              switchLoad(3, load_state == '1');
+              switchLoad(int(load_select - 'A'), load_state == '1');
               break;
-              //switchLoad(int(load_select - 'A'), load_state == '1');
-              // Serial.println("akia yeti s manz");
-              //break;
             case 'R':
                reInit();
                break;
